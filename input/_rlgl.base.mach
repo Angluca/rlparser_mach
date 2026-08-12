@@ -1,0 +1,25 @@
+#[symbol("GRAPHICS_API_OPENGL_ES2")]
+val GRAPHICS_API_OPENGL_ES2: bool = false;
+$if (GRAPHICS_API_OPENGL_ES2) {
+    pub rec rlVertexBuffer {
+          elementCount: i32;
+          vertices: *f32;
+          texcoords: *f32;
+          normals: *f32;
+          colors: *u8;
+          indices: *u16;
+          vaoId: u32;
+          vboId: [5]u32;
+    }
+} $or {
+    pub rec rlVertexBuffer {
+          elementCount: i32;
+          vertices: *f32;
+          texcoords: *f32;
+          normals: *f32;
+          colors: *u8;
+          indices: *u32;
+          vaoId: u32;
+          vboId: [5]u32;
+    }
+}
