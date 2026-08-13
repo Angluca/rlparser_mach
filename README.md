@@ -1,3 +1,10 @@
+# build for mach
+```zsh
+make
+# or
+make mach
+```
+
 # rlparser - raylib parser
 
 This parser scans [`raylib.h`](../../src/raylib.h) to get information about `defines`, `structs`, `enums` and `functions`.

@@ -98,7 +98,6 @@ all: mach
 # Clean rlparser and generated output files 
 #rm -f rlparser *.json *.txt *.xml *.lua *.sexpr 
 clean:
-	rm -f ./output/*.mach
-	rm -f rlparser
-	rm -rf *.dSYM
+	@rm -rf *.dSYM
+	rm -f ./output/*.mach rlparser
 
