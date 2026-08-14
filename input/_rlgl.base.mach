@@ -1,3 +1,4 @@
+fwd raylib.raylib.Matrix;
 #[symbol("GRAPHICS_API_OPENGL_ES2")]
 val GRAPHICS_API_OPENGL_ES2: bool = false;
 $if (GRAPHICS_API_OPENGL_ES2) {

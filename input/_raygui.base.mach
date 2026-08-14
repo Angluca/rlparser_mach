@@ -1,0 +1,8 @@
+fwd raylib.raylib.Vector2;
+fwd raylib.raylib.Vector3;
+fwd raylib.raylib.Color;
+fwd raylib.raylib.Rectangle;
+fwd raylib.raylib.Texture;
+fwd raylib.raylib.Image;
+fwd raylib.raylib.GlyphInfo;
+fwd raylib.raylib.Font;

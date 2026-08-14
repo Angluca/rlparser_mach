@@ -1,0 +1,4 @@
+fwd raylib.raylib.Vector2;
+fwd raylib.raylib.Vector3;
+fwd raylib.raylib.Matrix;
+fwd raylib.raylib.Camera3D;

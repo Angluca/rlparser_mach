@@ -1556,6 +1556,7 @@ static const char *GetMachType(char* ret, char* _name) {
     strcpy(ret, name);
     return ret;
 }
+
 int FindExcessWord(const char* name) {
     static const char* _excess_words[] = {
         "rl_", "gui_"
@@ -1575,6 +1576,23 @@ int FindExcessWord(const char* name) {
         else ret = 0;
     }
     return ret;
+}
+
+bool IsExcessRec(const char* name) {
+    static const char* _excess_words[] = {
+        "rlVertexBuffer",
+        "Vector2", "Vector3", "Vector4", "Matrix",
+        "Color", "Rectangle", "Image", "Texture",
+        "GlyphInfo", "Font", "Camera2D", "Camera3D",
+        "Shader",
+    };
+    int count = sizeof(_excess_words)/sizeof(_excess_words[0]);
+    for (int i = 0; i < count; i++) {
+        if(strstr(name, _excess_words[i])) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void CamelToSnake(const char *camel, char *snake) {
@@ -2340,6 +2358,24 @@ static void ExportParsedData(const char *fileName, int format)
                     }
                     fprintf(outFile, "%s\n", _fileBuf);
                 }
+                else if (strstr(inFileName, "raymath.h")) {
+                    if(GetFileBuf("input/_raymath.base.mach", _fileBuf, MAXLEN) < 1) {
+                        perror("read base_file errorr");
+                    }
+                    fprintf(outFile, "%s\n", _fileBuf);
+                }
+                else if (strstr(inFileName, "rcamera.h")) {
+                    if(GetFileBuf("input/_rcamera.base.mach", _fileBuf, MAXLEN) < 1) {
+                        perror("read base_file errorr");
+                    }
+                    fprintf(outFile, "%s\n", _fileBuf);
+                }
+                else if (strstr(inFileName, "raygui.h")) {
+                    if(GetFileBuf("input/_raygui.base.mach", _fileBuf, MAXLEN) < 1) {
+                        perror("read base_file errorr");
+                    }
+                    fprintf(outFile, "%s\n", _fileBuf);
+                }
                 for (int i = 0; i < defineCount; i++)
                 {
                     switch(defines[i].type) {
@@ -2370,6 +2406,7 @@ static void ExportParsedData(const char *fileName, int format)
             char ret[256] = {0};
             for (int i = 0; i < structCount; i++)
             {
+                if(!strstr(inFileName, "raylib.h") && IsExcessRec(structs[i].name)) continue;
                 fprintf(outFile, "pub rec %s {\n", structs[i].name);
                 /*fprintf(outFile, "  Name: %s\n", structs[i].name);*/
                 /*fprintf(outFile, "  Description: %s\n", structs[i].desc);*/
