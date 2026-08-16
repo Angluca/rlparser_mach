@@ -1597,19 +1597,22 @@ bool IsExcessRec(const char* name) {
 
 void CamelToSnake(const char *camel, char *snake) {
     int j = 0;
+    char prev = 0;
+    char next = 0;
+    char cur = 0;
     for (int i = 0; camel[i] != '\0'; i++) {
-        if (isupper((unsigned char)camel[i])) {
+        prev = camel[i - 1];
+        next = camel[i + 1];
+        cur = camel[i];
+        if (isupper(cur)) {
             if (i > 0) {
-                char prev = camel[i - 1];
-                char next = camel[i + 1];
-                if (islower(prev) || isdigit(prev)) {
-                    snake[j++] = '_';
-                } else if (isupper(prev) && next != '\0' && islower(next)) {
+                if (islower(prev) || (isdigit(prev) && next)) {
                     snake[j++] = '_';
                 }
             }
-            snake[j++] = tolower((unsigned char)camel[i]);
+            snake[j++] = tolower(cur);
         } else {
+            /*if (i > 0 && isdigit(cur) && !isdigit(prev)) snake[j++] = '_';*/
             snake[j++] = camel[i];
         }
     }

@@ -1,7 +1,4 @@
 #!/bin/sh
-# regenerate or verify src/ray.mach, the flat public surface.
-#   tools/surface.sh gen     rewrite src/ray.mach from the split modules
-#   tools/surface.sh check   exit nonzero if src/ray.mach is out of date
 set -eu
 cd "$(dirname "$0")/.."
 
@@ -15,24 +12,30 @@ generate() {
 # `tools/surface.sh gen` after changing any split module's public surface.
 #
 # re-exports every binding under one namespace so consumers can write
-# `use ray.raylib;` and reach the whole API as ray.init(),
-# ray.create_window(), ray.KEY_ESCAPE, and so on. the split modules
-# (ray.core, ray.window, ...) remain importable individually.
+# `use raylib.ra;` and reach the whole API as ra.init_window(...),
+# ra.Vector2, ra.KEY_ESCAPE, and so on. the split modules
+# (raylib.raylib,raylib.raymath,raylib.rcamera) remain importable individually.
 
-use ray.c;
+#use ra.xxx;
 EOF
-    for m in $MODULES; do printf 'use ray.%s;\n' "$m"; done
-    #printf '\nfwd c.Vidmode;\nfwd c.Gammaramp;\nfwd c.Image;\nfwd c.Gamepadstate;\n'
+    for m in $MODULES; do printf 'use raylib.%s;\n' "$m"; done
     for m in $MODULES; do
         grep -oE '^pub (val|fun|rec|def) [A-Za-z_][A-Za-z0-9_]*' "output/$m.mach" |
             awk -v m="$m" '{print m"."$3}'
-    done | LC_ALL=C sort | awk '{print "fwd "$1";"}'
+    done | LC_ALL=C sort | awk -F. ' {
+        if (!($NF in seen)) {
+            seen[$NF] = $0
+            print "fwd "$0";"
+        } else {
+            print "# dup " $0 " (shadowed by " seen[$NF] ")" > "/dev/stderr"
+        }
+    } '
 }
 
 case "${1:-}" in
-    gen)   generate > output/ray.mach ;;
-    check) generate | diff -u output/ray.mach - >&2 || {
-               echo "src/ray.mach is out of date; run tools/surface.sh gen" >&2
+    gen)   generate 2>/dev/null > output/ra.mach ;;
+    check) generate | diff -u output/ra.mach - >&2 || {
+               echo "src/ra.mach is out of date; run tools/surface.sh gen" >&2
                exit 1
            } ;;
     *)     echo "usage: tools/surface.sh gen|check" >&2; exit 2 ;;
