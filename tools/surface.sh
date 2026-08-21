@@ -2,8 +2,10 @@
 set -eu
 cd "$(dirname "$0")/.."
 
+MACHS="math"
 MODULES="raylib raymath rcamera"
 
+[ ! -f "output/ra.mach" ] && touch "output/ra.mach"
 generate() {
     cat <<'EOF'
 # the flat public surface of the Raylib bindings
@@ -18,13 +20,36 @@ generate() {
 
 #use ra.xxx;
 EOF
-    for m in $MODULES; do printf 'use raylib.%s;\n' "$m"; done
-    for m in $MODULES; do
-        grep -oE '^pub (val|fun|rec|def) [A-Za-z_][A-Za-z0-9_]*' "output/$m.mach" |
-            awk -v m="$m" '{print m"."$3}'
-    done | LC_ALL=C sort | awk -F. ' {
+    for m in $MODULES; do printf 'use raylib.%s;\n' "$m"; done 
+    for i in $MACHS; do printf 'use raylib.%s;\n' "$i"; done 
+    {
+        for m in $MODULES; do
+            if [ -f "output/$m.mach" ]; then
+                grep -oE 'pub (ext )?(val|fun|rec|def) [A-Za-z_][A-Za-z0-9_]*' "output/$m.mach" |
+                    awk -v m="$m" '{
+                        if ($2 == "ext") {
+                            print m"."$4
+                        } else {
+                            print m"."$3
+                        }
+                    }'
+            fi
+        done
+        for m in $MACHS; do
+            if [ -f "machs/$m.mach" ]; then
+                grep -oE '^pub (ext )?(val|fun|rec|def) [A-Za-z_][A-Za-z0-9_]*' "machs/$m.mach" |
+                    awk -v m="$m" '{
+                        if ($2 == "ext") {
+                            print m"."$4
+                        } else {
+                            print m"."$3
+                        }
+                    }'
+            fi
+        done
+    } | LC_ALL=C sort | awk -F. ' {
         if (!($NF in seen)) {
-            seen[$NF] = $0
+            seen[$NF] =$0
             print "fwd "$0";"
         } else {
             print "# dup " $0 " (shadowed by " seen[$NF] ")" > "/dev/stderr"

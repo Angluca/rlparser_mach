@@ -1,7 +1,7 @@
 EXTENSION?=mach
 FORMAT?=CODE
 
-.PHONY: all mach parse clean
+.PHONY: all mach parse gen clean
 
 # Determine PLATFORM_OS
 # No uname.exe on MinGW!, but OS=Windows_NT on Windows!
@@ -78,6 +78,7 @@ mach: clean rlparser
 	./rlparser -i ./h/rcamera.h -o ./output/rcamera.$(EXTENSION) -f $(FORMAT) -d RLAPI -t "RLGL IMPLEMENTATION"
 	./rlparser -i ./h/raygui.h -o ./output/raygui.$(EXTENSION) -f $(FORMAT) -d RAYGUIAPI -t "RAYGUI IMPLEMENTATION"
 	@rm -rf *.dSYM
+	#$(MAKE) gen
 
 # rlparser compilation
 rlparser: rlparser.c
@@ -94,6 +95,9 @@ all: mach
 	#FORMAT=XML EXTENSION=xml $(MAKE) parse
 	#FORMAT=LUA EXTENSION=lua $(MAKE) parse
 	#FORMAT=SEXPR EXTENSION=sexpr $(MAKE) parse
+
+gen:
+	./tools/surface.sh gen
 
 # Clean rlparser and generated output files 
 #rm -f rlparser *.json *.txt *.xml *.lua *.sexpr 
