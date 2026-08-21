@@ -1527,7 +1527,7 @@ static const char *GetMachType(char* ret, char* _name) {
     else if(strcmp("const int", tname) == 0) strcpy(pt, "i32"), pt+=3;
     else if(strcmp("float", tname) == 0) strcpy(pt, "f32"), pt+=3;
     else if(strcmp("const float", tname) == 0) strcpy(pt, "f32"), pt+=3;
-    else if(strcmp("va_list", tname) == 0) strcpy(pt, "..."), pt+=3;
+    else if(strcmp("va_list", tname) == 0) strcpy(pt, "ptr"), pt+=3;
     else if(strcmp("double", tname) == 0) strcpy(pt, "f64"), pt+=3;
     else if(strcmp("long", tname) == 0) strcpy(pt, "i32"), pt+=3;
     else if(strcmp("longlong", tname) == 0) strcpy(pt, "i64"), pt+=3;
@@ -2513,7 +2513,7 @@ static void ExportParsedData(const char *fileName, int format)
                     memset(ret, 0, sizeof(ret));
                     GetMachType(ret, funcs[i].paramType[p]);
                     if(strcmp(ret, "...")==0) {
-                        fprintf(outFile, "va: %s", ret);
+                        fprintf(outFile, "%s", ret);
                         _sfb_len += snprintf(snakeFnBuf+_sfb_len, _sfb_size-_sfb_len, "va: %s", ret);
                         _cf_len += snprintf(_call_fun+_cf_len, _cf_size-_cf_len, "va%s", ret);
                     }
