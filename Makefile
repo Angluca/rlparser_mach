@@ -78,7 +78,7 @@ mach: clean rlparser
 	./rlparser -i ./h/rcamera.h -o ./output/rcamera.$(EXTENSION) -f $(FORMAT) -d RLAPI -t "RLGL IMPLEMENTATION"
 	./rlparser -i ./h/raygui.h -o ./output/raygui.$(EXTENSION) -f $(FORMAT) -d RAYGUIAPI -t "RAYGUI IMPLEMENTATION"
 	@rm -rf *.dSYM
-	#$(MAKE) gen
+	$(MAKE) gen
 
 # rlparser compilation
 rlparser: rlparser.c

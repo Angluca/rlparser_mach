@@ -4157,22 +4157,22 @@ int GuiColorBarHue(Rectangle bounds, const char *text, float *hue)
     {
         // Draw hue bar:color bars
         // NOTE: Using DrawRectangleGradientEx(bounds, color1, color2, color2, color1);
-        DrawRectangleGradientEx(RAYGUI_CLITERAL(Rectangle){ bounds.x, bounds.y, bounds.width, bounds.height/6.0f }, 
+        DrawRectangleGradientEx(RAYGUI_CLITERAL(Rectangle){ bounds.x, bounds.y, bounds.width, bounds.height/6.0f },
             Fade(RAYGUI_CLITERAL(Color){ 255, 0, 0, 255 }, guiAlpha), Fade(RAYGUI_CLITERAL(Color){ 255, 255, 0, 255 }, guiAlpha),
             Fade(RAYGUI_CLITERAL(Color){ 255, 255, 0, 255 }, guiAlpha), Fade(RAYGUI_CLITERAL(Color){ 255, 0, 0, 255 }, guiAlpha));
-        DrawRectangleGradientEx(RAYGUI_CLITERAL(Rectangle){ bounds.x, bounds.y + 1*(bounds.height/6.0f), bounds.width, bounds.height/6.0f }, 
+        DrawRectangleGradientEx(RAYGUI_CLITERAL(Rectangle){ bounds.x, bounds.y + 1*(bounds.height/6.0f), bounds.width, bounds.height/6.0f },
             Fade(RAYGUI_CLITERAL(Color){ 255, 255, 0, 255 }, guiAlpha), Fade(RAYGUI_CLITERAL(Color){ 0, 255, 0, 255 }, guiAlpha),
             Fade(RAYGUI_CLITERAL(Color){ 0, 255, 0, 255 }, guiAlpha), Fade(RAYGUI_CLITERAL(Color){ 255, 255, 0, 255 }, guiAlpha));
-        DrawRectangleGradientEx(RAYGUI_CLITERAL(Rectangle){ bounds.x, bounds.y + 2*(bounds.height/6.0f), bounds.width, bounds.height/6.0f }, 
+        DrawRectangleGradientEx(RAYGUI_CLITERAL(Rectangle){ bounds.x, bounds.y + 2*(bounds.height/6.0f), bounds.width, bounds.height/6.0f },
             Fade(RAYGUI_CLITERAL(Color){ 0, 255, 0, 255 }, guiAlpha), Fade(RAYGUI_CLITERAL(Color){ 0, 255, 255, 255 }, guiAlpha),
             Fade(RAYGUI_CLITERAL(Color){ 0, 255, 255, 255 }, guiAlpha), Fade(RAYGUI_CLITERAL(Color){ 0, 255, 0, 255 }, guiAlpha));
-        DrawRectangleGradientEx(RAYGUI_CLITERAL(Rectangle){ bounds.x, bounds.y + 3*(bounds.height/6.0f), bounds.width, bounds.height/6.0f }, 
+        DrawRectangleGradientEx(RAYGUI_CLITERAL(Rectangle){ bounds.x, bounds.y + 3*(bounds.height/6.0f), bounds.width, bounds.height/6.0f },
             Fade(RAYGUI_CLITERAL(Color){ 0, 255, 255, 255 }, guiAlpha), Fade(RAYGUI_CLITERAL(Color){ 0, 0, 255, 255 }, guiAlpha),
             Fade(RAYGUI_CLITERAL(Color){ 0, 0, 255, 255 }, guiAlpha), Fade(RAYGUI_CLITERAL(Color){ 0, 255, 255, 255 }, guiAlpha));
-        DrawRectangleGradientEx(RAYGUI_CLITERAL(Rectangle){ bounds.x, bounds.y + 4*(bounds.height/6.0f), bounds.width, bounds.height/6.0f }, 
+        DrawRectangleGradientEx(RAYGUI_CLITERAL(Rectangle){ bounds.x, bounds.y + 4*(bounds.height/6.0f), bounds.width, bounds.height/6.0f },
             Fade(RAYGUI_CLITERAL(Color){ 0, 0, 255, 255 }, guiAlpha), Fade(RAYGUI_CLITERAL(Color){ 255, 0, 255, 255 }, guiAlpha),
             Fade(RAYGUI_CLITERAL(Color){ 255, 0, 255, 255 }, guiAlpha), Fade(RAYGUI_CLITERAL(Color){ 0, 0, 255, 255 }, guiAlpha));
-        DrawRectangleGradientEx(RAYGUI_CLITERAL(Rectangle){ bounds.x, bounds.y + 5*(bounds.height/6.0f), bounds.width, bounds.height/6.0f }, 
+        DrawRectangleGradientEx(RAYGUI_CLITERAL(Rectangle){ bounds.x, bounds.y + 5*(bounds.height/6.0f), bounds.width, bounds.height/6.0f },
             Fade(RAYGUI_CLITERAL(Color){ 255, 0, 255, 255 }, guiAlpha), Fade(RAYGUI_CLITERAL(Color){ 255, 0, 0, 255 }, guiAlpha),
             Fade(RAYGUI_CLITERAL(Color){ 255, 0, 0, 255 }, guiAlpha), Fade(RAYGUI_CLITERAL(Color){ 255, 0, 255, 255 }, guiAlpha));
     }
