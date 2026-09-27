@@ -2392,6 +2392,12 @@ static void ExportParsedData(const char *fileName, int format)
                         /*}*/
                         default: {
                             /*const char* dname = StrMachDf(defines[i].type);*/
+                            if (!strstr(inFileName, "raylib")) {
+                                if (strstr(defines[i].name, "PI")) break;
+                                else if (strstr(defines[i].name, "EPSILON")) break;
+                                else if (strstr(defines[i].name, "DEG2RAD")) break;
+                                else if (strstr(defines[i].name, "RAD2DEG")) break;
+                            }
                             fprintf(outFile, "pub val %s: %s = %s;\n", defines[i].name, StrMachType(defines[i].type, defines[i].value), defines[i].value);
                         }
                     }
