@@ -1,6 +1,6 @@
 /**********************************************************************************************
 *
-*   raymath v2.0 - Math functions to work with Vector2, Vector3, Vector4, Matrix and Quaternions
+*   raymath v2.1 - Math functions to work with Vector2, Vector3, Vector4, Matrix and Quaternions
 *
 *   CONVENTIONS:
 *     - Matrix structure is defined as row-major (memory layout) but parameters naming AND all
@@ -9,6 +9,7 @@
 *       It benefits some functions making them cache-friendly and also avoids matrix
 *       transpositions sometimes required by OpenGL
 *       Example: In memory order, row0 is [m0 m4 m8 m12] but in semantic math row0 is [m0 m1 m2 m3]
+*     - All math is float only, no doubles usage
 *     - Functions are always self-contained, no function use another raymath function inside,
 *       required code is directly re-implemented inside
 *     - Functions input parameters are always received by value (2 unavoidable exceptions)
@@ -1970,32 +1971,32 @@ RMAPI Matrix MatrixScale(float x, float y, float z)
 }
 
 // Get perspective projection matrix
-RMAPI Matrix MatrixFrustum(double left, double right, double bottom, double top, double nearPlane, double farPlane)
+RMAPI Matrix MatrixFrustum(float left, float right, float bottom, float top, float nearPlane, float farPlane)
 {
     Matrix result = { 0 };
 
-    float rl = (float)(right - left);
-    float tb = (float)(top - bottom);
-    float fn = (float)(farPlane - nearPlane);
+    float rl = right - left;
+    float tb = top - bottom;
+    float fn = farPlane - nearPlane;
 
-    result.m0 = ((float)nearPlane*2.0f)/rl;
+    result.m0 = (nearPlane*2.0f)/rl;
     result.m1 = 0.0f;
     result.m2 = 0.0f;
     result.m3 = 0.0f;
 
     result.m4 = 0.0f;
-    result.m5 = ((float)nearPlane*2.0f)/tb;
+    result.m5 = (nearPlane*2.0f)/tb;
     result.m6 = 0.0f;
     result.m7 = 0.0f;
 
-    result.m8 = ((float)right + (float)left)/rl;
-    result.m9 = ((float)top + (float)bottom)/tb;
-    result.m10 = -((float)farPlane + (float)nearPlane)/fn;
+    result.m8 = (right + left)/rl;
+    result.m9 = (top + bottom)/tb;
+    result.m10 = -(farPlane + nearPlane)/fn;
     result.m11 = -1.0f;
 
     result.m12 = 0.0f;
     result.m13 = 0.0f;
-    result.m14 = -((float)farPlane*(float)nearPlane*2.0f)/fn;
+    result.m14 = -(farPlane*nearPlane*2.0f)/fn;
     result.m15 = 0.0f;
 
     return result;
@@ -2003,39 +2004,39 @@ RMAPI Matrix MatrixFrustum(double left, double right, double bottom, double top,
 
 // Get perspective projection matrix
 // NOTE: Fovy angle must be provided in radians
-RMAPI Matrix MatrixPerspective(double fovY, double aspect, double nearPlane, double farPlane)
+RMAPI Matrix MatrixPerspective(float fovY, float aspect, float nearPlane, float farPlane)
 {
     Matrix result = { 0 };
 
-    double top = nearPlane*tan(fovY*0.5);
-    double bottom = -top;
-    double right = top*aspect;
-    double left = -right;
+    float top = nearPlane*tanf(fovY*0.5f);
+    float bottom = -top;
+    float right = top*aspect;
+    float left = -right;
 
     // MatrixFrustum(-right, right, -top, top, near, far);
-    float rl = (float)(right - left);
-    float tb = (float)(top - bottom);
-    float fn = (float)(farPlane - nearPlane);
+    float rl = right - left;
+    float tb = top - bottom;
+    float fn = farPlane - nearPlane;
 
-    result.m0 = ((float)nearPlane*2.0f)/rl;
-    result.m5 = ((float)nearPlane*2.0f)/tb;
-    result.m8 = ((float)right + (float)left)/rl;
-    result.m9 = ((float)top + (float)bottom)/tb;
-    result.m10 = -((float)farPlane + (float)nearPlane)/fn;
+    result.m0 = (nearPlane*2.0f)/rl;
+    result.m5 = (nearPlane*2.0f)/tb;
+    result.m8 = (right + left)/rl;
+    result.m9 = (top + bottom)/tb;
+    result.m10 = -(farPlane + nearPlane)/fn;
     result.m11 = -1.0f;
-    result.m14 = -((float)farPlane*(float)nearPlane*2.0f)/fn;
+    result.m14 = -(farPlane*nearPlane*2.0f)/fn;
 
     return result;
 }
 
 // Get orthographic projection matrix
-RMAPI Matrix MatrixOrtho(double left, double right, double bottom, double top, double nearPlane, double farPlane)
+RMAPI Matrix MatrixOrtho(float left, float right, float bottom, float top, float nearPlane, float farPlane)
 {
     Matrix result = { 0 };
 
-    float rl = (float)(right - left);
-    float tb = (float)(top - bottom);
-    float fn = (float)(farPlane - nearPlane);
+    float rl = right - left;
+    float tb = top - bottom;
+    float fn = farPlane - nearPlane;
 
     result.m0 = 2.0f/rl;
     result.m1 = 0.0f;
@@ -2049,9 +2050,9 @@ RMAPI Matrix MatrixOrtho(double left, double right, double bottom, double top, d
     result.m9 = 0.0f;
     result.m10 = -2.0f/fn;
     result.m11 = 0.0f;
-    result.m12 = -((float)left + (float)right)/rl;
-    result.m13 = -((float)top + (float)bottom)/tb;
-    result.m14 = -((float)farPlane + (float)nearPlane)/fn;
+    result.m12 = -(left + right)/rl;
+    result.m13 = -(top + bottom)/tb;
+    result.m14 = -(farPlane + nearPlane)/fn;
     result.m15 = 1.0f;
 
     return result;
@@ -2281,6 +2282,12 @@ RMAPI Quaternion QuaternionNlerp(Quaternion q1, Quaternion q2, float amount)
 {
     Quaternion result = { 0 };
 
+    // q2 and -q2 are the same rotation, take the shorter path like QuaternionSlerp()
+    if ((q1.x*q2.x + q1.y*q2.y + q1.z*q2.z + q1.w*q2.w) < 0.0f)
+    {
+        q2.x = -q2.x; q2.y = -q2.y; q2.z = -q2.z; q2.w = -q2.w;
+    }
+
     // QuaternionLerp(q1, q2, amount)
     result.x = q1.x + amount*(q2.x - q1.x);
     result.y = q1.y + amount*(q2.y - q1.y);
@@ -2381,10 +2388,31 @@ RMAPI Quaternion QuaternionFromVector3ToVector3(Vector3 from, Vector3 to)
     float cos2Theta = (from.x*to.x + from.y*to.y + from.z*to.z); // Vector3DotProduct(from, to)
     Vector3 cross = { from.y*to.z - from.z*to.y, from.z*to.x - from.x*to.z, from.x*to.y - from.y*to.x }; // Vector3CrossProduct(from, to)
 
+    float lengths = sqrtf(cross.x*cross.x + cross.y*cross.y + cross.z*cross.z + cos2Theta*cos2Theta); // |from|*|to|
+
     result.x = cross.x;
     result.y = cross.y;
     result.z = cross.z;
-    result.w = sqrtf(cross.x*cross.x + cross.y*cross.y + cross.z*cross.z + cos2Theta*cos2Theta) + cos2Theta;
+    result.w = lengths + cos2Theta;
+
+    // Opposite vectors: cross product is zero, rotate 180 degrees around any axis perpendicular to 'from'
+    if ((lengths > 0.0f) && (result.w <= lengths*EPSILON))
+    {
+        if (fabsf(from.x) > fabsf(from.z))
+        {
+            result.x = -from.y;
+            result.y = from.x;
+            result.z = 0.0f;
+        }
+        else
+        {
+            result.x = 0.0f;
+            result.y = -from.z;
+            result.z = from.y;
+        }
+
+        result.w = 0.0f;
+    }
 
     // QuaternionNormalize(q);
     // NOTE: Normalize to essentially nlerp the original and identity to 0.5
@@ -2602,21 +2630,30 @@ RMAPI Vector3 QuaternionToEuler(Quaternion q)
 {
     Vector3 result = { 0 };
 
-    // Roll (x-axis rotation)
-    float x0 = 2.0f*(q.w*q.x + q.y*q.z);
-    float x1 = 1.0f - 2.0f*(q.x*q.x + q.y*q.y);
-    result.x = atan2f(x0, x1);
-
     // Pitch (y-axis rotation)
     float y0 = 2.0f*(q.w*q.y - q.z*q.x);
     y0 = y0 > 1.0f ? 1.0f : y0;
     y0 = y0 < -1.0f ? -1.0f : y0;
     result.y = asinf(y0);
 
-    // Yaw (z-axis rotation)
-    float z0 = 2.0f*(q.w*q.z + q.x*q.y);
-    float z1 = 1.0f - 2.0f*(q.y*q.y + q.z*q.z);
-    result.z = atan2f(z0, z1);
+    if (fabsf(y0) >= 0.9999995f)
+    {
+        // Gimbal lock: roll and yaw turn about the same axis, keep the whole turn in roll
+        float sign = (q.w < 0.0f)? -1.0f : 1.0f;
+        result.x = 2.0f*atan2f(sign*q.x, sign*q.w);
+    }
+    else
+    {
+        // Roll (x-axis rotation)
+        float x0 = 2.0f*(q.w*q.x + q.y*q.z);
+        float x1 = 1.0f - 2.0f*(q.x*q.x + q.y*q.y);
+        result.x = atan2f(x0, x1);
+
+        // Yaw (z-axis rotation)
+        float z0 = 2.0f*(q.w*q.z + q.x*q.y);
+        float z1 = 1.0f - 2.0f*(q.y*q.y + q.z*q.z);
+        result.z = atan2f(z0, z1);
+    }
 
     return result;
 }
@@ -2717,9 +2754,9 @@ RMAPI void MatrixDecompose(Matrix mat, Vector3 *translation, Quaternion *rotatio
     translation->z = mat.m14;
 
     // Matrix Columns - Rotation will be extracted into here
-    Vector3 matColumns[3] = {{ mat.m0, mat.m4, mat.m8 },
-                             { mat.m1, mat.m5, mat.m9 },
-                             { mat.m2, mat.m6, mat.m10 }};
+    Vector3 matColumns[3] = {{ mat.m0, mat.m1, mat.m2 },
+                             { mat.m4, mat.m5, mat.m6 },
+                             { mat.m8, mat.m9, mat.m10 }};
 
     // Shear Parameters XY, XZ, and YZ (extract and ignored)
     float shear[3] = { 0 };
@@ -2783,10 +2820,10 @@ RMAPI void MatrixDecompose(Matrix mat, Vector3 *translation, Quaternion *rotatio
     *scale = Vector3Scale(scl, stabilizer);
 
     // Extract Rotation
-    Matrix rotationMatrix = { matColumns[0].x, matColumns[0].y, matColumns[0].z, 0,
-                             matColumns[1].x, matColumns[1].y, matColumns[1].z, 0,
-                             matColumns[2].x, matColumns[2].y, matColumns[2].z, 0,
-                             0, 0, 0, 1 };
+    Matrix rotationMatrix = { matColumns[0].x, matColumns[1].x, matColumns[2].x, 0,
+                              matColumns[0].y, matColumns[1].y, matColumns[2].y, 0,
+                              matColumns[0].z, matColumns[1].z, matColumns[2].z, 0,
+                              0, 0, 0, 1 };
     *rotation = QuaternionFromMatrix(rotationMatrix);
 }
 
