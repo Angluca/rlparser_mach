@@ -2412,7 +2412,8 @@ static void ExportParsedData(const char *fileName, int format)
             }
             // Print structs info
             /*fprintf(outFile, "\nStructures found: %i\n\n", structCount);*/
-            char ret[256] = {0};
+            static char ret[256] = {0};
+            static char _struct_field_name[64] = {0};
             for (int i = 0; i < structCount; i++)
             {
                 if(!strstr(inFileName, "raylib.h") && IsExcessRec(structs[i].name)) continue;
@@ -2422,7 +2423,9 @@ static void ExportParsedData(const char *fileName, int format)
                 for (int f = 0; f < structs[i].fieldCount; f++)
                 {
                     memset(ret, 0, sizeof(ret));
-                    fprintf(outFile, "      %s: %s;", structs[i].fieldName[f], GetMachType(ret, structs[i].fieldType[f]));
+                    CamelToSnake(structs[i].fieldName[f], _struct_field_name);
+                    /*fprintf(outFile, "      %s: %s;", structs[i].fieldName[f], GetMachType(ret, structs[i].fieldType[f]));*/
+                    fprintf(outFile, "      %s: %s;", _struct_field_name, GetMachType(ret, structs[i].fieldType[f]));
                     /*if (structs[i].fieldDesc[f][0]) fprintf(outFile, "      // %s\n", structs[i].fieldDesc[f]);*/
                     /*else fprintf(outFile, "\n");*/
                     fprintf(outFile, "\n");
@@ -2490,6 +2493,7 @@ static void ExportParsedData(const char *fileName, int format)
             // Print functions info
             /*fprintf(outFile, "\nFunctions found: %i\n\n", funcCount);*/
             static char _fun_name[64] = {0};
+            static char _fun_param_name[64] = {0};
             static char _call_fun[1024] = {0};
             int _sfb_size = sizeof(_call_fun);
             int _sfb_len = 0;
@@ -2518,22 +2522,29 @@ static void ExportParsedData(const char *fileName, int format)
                 for (int p = 0; p < funcs[i].paramCount; p++) {
                     memset(ret, 0, sizeof(ret));
                     GetMachType(ret, funcs[i].paramType[p]);
+                    CamelToSnake(funcs[i].paramName[p], _fun_param_name);
                     if(strcmp(ret, "...")==0) {
                         fprintf(outFile, "%s", ret);
                         _sfb_len += snprintf(snakeFnBuf+_sfb_len, _sfb_size-_sfb_len, "va: %s", ret);
                         _cf_len += snprintf(_call_fun+_cf_len, _cf_size-_cf_len, "va%s", ret);
                     }
                     else if((p+1) < funcs[i].paramCount) {
-                        fprintf(outFile, "%s: %s, ", funcs[i].paramName[p], ret);
-                        _sfb_len += snprintf(snakeFnBuf+_sfb_len, _sfb_size-_sfb_len, "%s: %s, ", funcs[i].paramName[p], ret);
-                        _cf_len += snprintf(_call_fun+_cf_len, _cf_size-_cf_len, "%s, ", funcs[i].paramName[p]);
+                        /*fprintf(outFile, "%s: %s, ", funcs[i].paramName[p], ret);*/
+                        fprintf(outFile, "%s: %s, ", _fun_param_name, ret);
+                        /*_sfb_len += snprintf(snakeFnBuf+_sfb_len, _sfb_size-_sfb_len, "%s: %s, ", funcs[i].paramName[p], ret);*/
+                        /*_cf_len += snprintf(_call_fun+_cf_len, _cf_size-_cf_len, "%s, ", funcs[i].paramName[p]);*/
+                        _sfb_len += snprintf(snakeFnBuf+_sfb_len, _sfb_size-_sfb_len, "%s: %s, ", _fun_param_name, ret);
+                        _cf_len += snprintf(_call_fun+_cf_len, _cf_size-_cf_len, "%s, ", _fun_param_name);
                     }
                         /*fprintf(outFile, "%s: %s, ", funcs[i].paramName[p], GetMachType(ret, funcs[i].paramType[p]));*/
 
                     else {
-                        fprintf(outFile, "%s: %s", funcs[i].paramName[p], ret);
-                        _sfb_len += snprintf(snakeFnBuf+_sfb_len, _sfb_size-_sfb_len, "%s: %s", funcs[i].paramName[p], ret);
-                        _cf_len += snprintf(_call_fun+_cf_len, _cf_size-_cf_len, "%s", funcs[i].paramName[p]);
+                        /*fprintf(outFile, "%s: %s", funcs[i].paramName[p], ret);*/
+                        fprintf(outFile, "%s: %s", _fun_param_name, ret);
+                        /*_sfb_len += snprintf(snakeFnBuf+_sfb_len, _sfb_size-_sfb_len, "%s: %s", funcs[i].paramName[p], ret);*/
+                        /*_cf_len += snprintf(_call_fun+_cf_len, _cf_size-_cf_len, "%s", funcs[i].paramName[p]);*/
+                        _sfb_len += snprintf(snakeFnBuf+_sfb_len, _sfb_size-_sfb_len, "%s: %s", _fun_param_name, ret);
+                        _cf_len += snprintf(_call_fun+_cf_len, _cf_size-_cf_len, "%s", _fun_param_name);
                     }
                         /*fprintf(outFile, "%s: %s", funcs[i].paramName[p], GetMachType(ret, funcs[i].paramType[p]));*/
                 }
