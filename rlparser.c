@@ -2459,7 +2459,11 @@ static void ExportParsedData(const char *fileName, int format)
                 /*fprintf(outFile, "  Description: %s\n", enums[i].desc);*/
                 for (int e = 0; e < enums[i].valueCount; e++)
                     /*fprintf(outFile, "    %s = %i\n", enums[i].valueName[e], enums[i].valueInteger[e]);*/
-                    fprintf(outFile, "pub val %s: i32 = %i;\n", enums[i].valueName[e], enums[i].valueInteger[e]);
+                    if (strcmp("ConfigFlags", enums[i].name) == 0) {
+                        fprintf(outFile, "pub val %s: u32 = %i;\n", enums[i].valueName[e], enums[i].valueInteger[e]);
+                    } else {
+                        fprintf(outFile, "pub val %s: i32 = %i;\n", enums[i].valueName[e], enums[i].valueInteger[e]);
+                    }
 
                 /*fprintf(outFile, "}\n");*/
             }
